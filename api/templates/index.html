@@ -15,7 +15,7 @@
 
         h1 {
             color: #333;
-           
+
         }
 
         form {
@@ -33,7 +33,7 @@
             color: #555;
         }
 
-        input {
+        select,input {
             width: 100%;
             padding: 8px;
             margin-bottom: 16px;
@@ -41,6 +41,7 @@
         }
 
         button {
+            margin-left: 10px;
             background-color: #4caf50;
             color: #fff;
             padding: 10px 20px;
@@ -55,7 +56,7 @@
 
         #result {
             margin-top: 20px;
-            
+
             padding: 10px;
             text-align: center;
             background-color: #e1f5fe;
@@ -65,31 +66,67 @@
             height: 35vh;
             overflow-y: auto;
         }
-
-   
-
-        
     </style>
-
+    <script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/vue/3.2.31/vue.global.prod.min.js"></script>
+    <script>
+        const data_list = [{ 'sid': 505030278778949, 'seller_id': 505002714591301, 'card_no': 'fp9eunyu7c@sfolkar.com', 'card_pwd': 'stk7bP4qfFJ7GpGobD16Gw==', 'create_time': '2024-01-17 03:53', 'sale_status': '未售', 'sold_type': '-', 'sold_status': '-', 'order_no': '', 'buyer_nick': '', 'out_time': '-', 'buy_time': '-', 'priority_time': 0, 'pwd_decrypt': 'mobai2024' }, { 'sid': 505032046313541, 'seller_id': 505002714591301, 'card_no': 'sm0ezisjyn@zipcatfish.com', 'card_pwd': 'n7zxLwIof7X+9OFpTqX/oQ==', 'create_time': '2024-01-17 04:00', 'sale_status': '未售', 'sold_type': '-', 'sold_status': '-', 'order_no': '', 'buyer_nick': '', 'out_time': '-', 'buy_time': '-', 'priority_time': 0, 'pwd_decrypt': 'mobai2024' }, { 'sid': 505222809792581, 'seller_id': 505002714591301, 'card_no': 'nni75o9wo4@zipcatfish.com', 'card_pwd': 'a5wC46CgjVvwfYr0XYhJdQ==', 'create_time': '2024-01-17 16:56', 'sale_status': '未售', 'sold_type': '-', 'sold_status': '-', 'order_no': '', 'buyer_nick': '', 'out_time': '-', 'buy_time': '-', 'priority_time': 0, 'pwd_decrypt': 'mobai2024' }, { 'sid': 505228538634309, 'seller_id': 505002714591301, 'card_no': '8yxtzaeh1y@rfcdrive.com', 'card_pwd': 'd0ZAJ1Z6ElwGul9hSpP4jA==', 'create_time': '2024-01-17 17:20', 'sale_status': '未售', 'sold_type': '-', 'sold_status': '-', 'order_no': '', 'buyer_nick': '', 'out_time': '-', 'buy_time': '-', 'priority_time': 0, 'pwd_decrypt': 'mobai2024' }]
+    </script>
 </head>
 
 <body>
+    <div id="app">
     <h2>订单提交</h2>
     <form id="orderForm">
         <label for="orderInput">输入订单号,邀请码,邀请次数</label>
-        <input type="text" id="orderInput" name="orderInput" required placeholder="输入订单号" style="margin-top: 20px;">
-        <input type="text" id="invite_code" name="invite_code" required placeholder="输入邀请码">
-        <input type="text" id="invite_times" name="invite_times" required placeholder="输入邀请次数">
-        <button type="button" onclick="executeOrders()">提交订单</button>
-        <button onclick="history_zh()">历史</button>
+        <!-- <input type="text" id="orderInput" name="orderInput" required placeholder="输入kind_id" style="margin-top: 20px;"> -->
+        <select id="type" v-model="kind_id" style="background-color: rgb(228, 228, 228);">
+            <option value="00" style="background-color: rgb(158, 158, 158);">请选择卡密天数</option>
+            <option value="505018174505029">5天</option>
+            <option value="505021378220101">30天</option>
+            <option value="505021763530821">100天</option>
+        </select>
+
+        <input type="text" v-model="invite_codes" id="invite_code" name="invite_code" required placeholder="输入邀请码">
+
+        <input type="text" v-model="invite_times" id="invite_times" name="invite_times" required placeholder="输入邀请次数">
+        <button type="button" @click="fetchData()">查询卡密</button>
+        <button onclick="executeOrders()">邀请</button>
         <button onclick="copyToClipboard()">复制</button>
-        <button onclick="clear_history()">清空记录</button>
-        <div id="result" style="display: none;">
+        <button @click="one_play()">全部操作</button>
+        <style>
+            #resulttimes {
+                display: inline-block;
+                /* 让 p 标签和 button 横向排列 */
+            }
+
+            button {
+                display: inline-block;
+                /* 让 button 和 p 标签横向排列 */
+                margin-left: 10px;
+                /* 可以根据需要调整按钮与文本之间的间距 */
+            }
+        </style>
+        <!-- <div id="result" style="display: none;">
             <p id="resulttimes"></p>
             <p id="resultText"></p>
-        </div>
+        </div> -->
+        <div id="result" style="display: block;">
+            <p id="resulttimes"></p>
+            <p id="resultText"></p>
 
-        
+            <div v-for="item in filteredItems" :key="item.card_no">
+                <p id="card_no">{{item.card_no}}
+                    <button @click="submitOrder2(item)">查看</button>
+                    
+                </p>
+                <p :id="'resultText_'+item.card_no" style="color: rgb(228, 59, 59);"></p>
+            </div>
+
+        </div>
+       
+
+
+
     </form>
     <style>
         footer {
@@ -98,39 +135,39 @@
             position: fixed;
             bottom: 0;
             width: 100%;
-            
+
             color: #000;
         }
     </style>
     <footer @click="cancel()" style="margin-left: -20px;">
         &copy; 2024 python小店
     </footer>
-
+</div>
 
     <script>
 
-    if (!localStorage.historyText) {
+        if (!localStorage.historyText) {
             localStorage.historyText = ""
-        } 
-    if (!localStorage.invite_code) {
+        }
+        if (!localStorage.invite_code) {
             localStorage.invite_code = "58016160"
-        } 
-    
-    
-    function history_zh() {
-        document.getElementById('resulttimes').innerText = "历史账号信息";
-        document.getElementById('resultText').innerText = localStorage.historyText;
-        document.getElementById('result').style.display = 'block';
+        }
 
-    }
-    function clear_history() {
-        localStorage.historyText = ""
-        document.getElementById('resulttimes').innerText = "历史记录已清空";
-        document.getElementById('resultText').innerText = localStorage.historyText;
-        document.getElementById('result').style.display = 'block';
 
-    }
- 
+        function history_zh() {
+            document.getElementById('resulttimes').innerText = "历史账号信息";
+            document.getElementById('resultText').innerText = localStorage.historyText;
+            document.getElementById('result').style.display = 'block';
+
+        }
+        function clear_history() {
+            localStorage.historyText = ""
+            document.getElementById('resulttimes').innerText = "历史记录已清空";
+            document.getElementById('resultText').innerText = localStorage.historyText;
+            document.getElementById('result').style.display = 'block';
+
+        }
+
     </script>
 
 
@@ -145,45 +182,66 @@
         document.getElementById('invite_times').value = 1
 
         async function executeOrders() {
+            const invite_code = document.getElementById('invite_code').value;
+            // event.preventDefault();
             const invite_times = document.getElementById('invite_times').value;
 
-            for (let i_times = 1; i_times < parseInt(invite_times) + 1; ) {
+            for (let i_times = 1; i_times < parseInt(invite_times) + 1;) {
                 document.getElementById('resulttimes').innerText = '邀请次数：' + i_times;
                 for (let i = 1; i < 16; i++) {
-                    var data = await submitOrder(i);
-                    if (data && i == 15){
+                    var data = await submitOrder9(i, invite_code);
+                    if (data && i == 15) {
                         console.log(data);
                         i_times++
                     }
-                    
+
                 }
             }
 
         }
 
-        async function submitOrder(fun_items) {
-            const orderInfo = document.getElementById('orderInput').value;
-            const invite_code = document.getElementById('invite_code').value;
+        async function executeOrders2(invite_code, invite_times) {
+            // const invite_code = document.getElementById('invite_code').value;
+            // // event.preventDefault();
+            // const invite_times = document.getElementById('invite_times').value;
+
+            for (let i_times = 1; i_times < parseInt(invite_times) + 1;) {
+                document.getElementById('resulttimes').innerText = '邀请次数：' + i_times;
+                for (let i = 1; i < 16; i++) {
+                    var data = await submitOrder9(i, invite_code);
+                    if (data && i == 15) {
+                        console.log(data);
+                        i_times++
+                    }
+
+                }
+            }
+
+        }
+
+        async function submitOrder9(fun_items, invite_code) {
+            // const orderInfo = document.getElementById('orderInput').value;
+            
 
 
             try {
-                const response = await fetch('/submit-order', {
+                const response = await fetch('/invite_now', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
                     },
                     body: new URLSearchParams({
-                        'orderInput': orderInfo,
+                        // 'orderInput': orderInfo,
                         'fun_items': fun_items,
                         'invite_code': invite_code,
-                        'invite_times': invite_times,
+                        // 'invite_times': invite_times,
                     }),
                 });
 
                 const data = await response.json();
                 document.getElementById('resultText').innerText = data.message;
                 document.getElementById('result').style.display = 'block';
-                if (fun_items == 15){
+                if (fun_items == 15) {
                     if (!data.message.includes("mobai2024")) {
                         return false
                     }
@@ -207,6 +265,116 @@
             document.body.removeChild(textArea);
             alert('结果已复制到剪贴板！');
         }
+    </script>
+
+
+    <script>
+        const app = Vue.createApp({
+            data() {
+                return {
+                    items: data_list,
+                    fieldNames: [],
+                    kind_id:"505018174505029",
+                    formData: {},
+                    editingItemId: null,
+                    searchTerm: "",
+                    kami_price: "00",
+                    invite_codes:"123456",
+                    invite_times:"1",
+                    kami_counts: "",
+                    db_name: "kami_all",
+                    isedit_Item: "1",
+                    max_text_num: 20,
+                    currentPage: 1,
+                };
+            },
+            computed: {
+                filteredItems() {
+                    return this.items.filter(item => {
+                        // Filter items based on the search term
+                        return Object.values(item).some(value =>
+                            String(value).toLowerCase().includes(this.searchTerm.toLowerCase())
+                        );
+                    });
+                },
+            },
+            mounted() {
+                this.fetchData();
+                document.getElementById("orderForm").addEventListener("submit", function (event) {
+                    // 阻止表单默认提交行为
+                    event.preventDefault();
+                });
+
+            },
+
+            methods: {
+                async fetchData(){
+
+                    
+                    // const kind_id = document.getElementById('orderInput').value;
+                    // const invite_code = document.getElementById('invite_code').value;
+                    try {
+                        const response = await fetch('/get_kami_data', {
+                            method: 'POST',
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify({
+                                'kind_id': this.kind_id,
+                                
+
+                            }),
+                        });
+
+                        const data = await response.json();
+                        this.items = data;
+                    } catch (error) {
+                        console.error('Error submitting order:', error);
+                    }
+                },
+                async submitOrder2(data_json) {
+
+                    try {
+                        const response = await fetch('/get_vip_data', {
+                            method: 'POST',
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify({
+                                'kind_id': this.kind_id,
+                                'card_no': data_json.card_no,
+                                'pwd_decrypt': data_json.pwd_decrypt,
+                                
+                            }),
+                        });
+
+                        const data = await response.json();
+                        document.getElementById('resultText_' + data_json.card_no).innerText = data.message;
+                        this.invite_codes=data.invite_code
+                        return [data.invite_code, data.times_invite]
+                 
+                    } catch (error) {
+                        console.error('Error submitting order:', error);
+                    }
+                },
+                // 一键执行
+                async one_play(){
+                    for (const data_json of this.items) {
+                        console.log(data_json);
+                        const res_data = await this.submitOrder2(data_json)
+                        console.log(res_data);
+                        if (res_data[1] != 0) {
+                            await executeOrders2(res_data[0], res_data[1])
+                        }
+                        
+
+                    };
+                }
+                
+
+            },
+        });
+        app.mount("#app");
     </script>
 </body>
 
