@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>订单提交</title>
+    <title>卡密查询</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -41,7 +41,7 @@
         }
 
         button {
-            margin-left: 10px;
+            margin: 5px;
             background-color: #4caf50;
             color: #fff;
             padding: 10px 20px;
@@ -75,9 +75,9 @@
 
 <body>
     <div id="app">
-    <h2>订单提交</h2>
+    <!-- <h4>卡密查询</h4> -->
     <form id="orderForm">
-        <label for="orderInput">输入订单号,邀请码,邀请次数</label>
+        <label for="orderInput">卡密查询系统</label>
         <!-- <input type="text" id="orderInput" name="orderInput" required placeholder="输入kind_id" style="margin-top: 20px;"> -->
         <select id="type" v-model="kind_id" style="background-color: rgb(228, 228, 228);">
             <option value="00" style="background-color: rgb(158, 158, 158);">请选择卡密天数</option>
@@ -90,9 +90,11 @@
 
         <input type="text" v-model="invite_times" id="invite_times" name="invite_times" required placeholder="输入邀请次数">
         <button type="button" @click="fetchData()">查询卡密</button>
-        <button onclick="executeOrders()">邀请</button>
-        <button onclick="copyToClipboard()">复制</button>
+        <button onclick="executeOrders()">邀请用户</button>
+        
         <button @click="one_play()">全部操作</button>
+        <button @click="one_query()">全部查询</button>
+        
         <style>
             #resulttimes {
                 display: inline-block;
@@ -111,7 +113,10 @@
             <p id="resultText"></p>
         </div> -->
         <div id="result" style="display: block;">
-            <p id="resulttimes"></p>
+            <button onclick="copyToClipboard()" style="background-color: rgb(194, 193, 193);">复制信息</button>
+            <p id="resulttimes">
+                
+            </p>
             <p id="resultText"></p>
 
             <div v-for="item in filteredItems" :key="item.card_no">
@@ -119,7 +124,7 @@
                     <button @click="submitOrder2(item)">查看</button>
                     
                 </p>
-                <p :id="'resultText_'+item.card_no" style="color: rgb(228, 59, 59);"></p>
+                <p :id="'resultText_'+item.card_no" title="11" style="color: rgb(228, 59, 59);" @click="copy_invite_code($event)"></p>
             </div>
 
         </div>
@@ -351,6 +356,7 @@
                         const data = await response.json();
                         document.getElementById('resultText_' + data_json.card_no).innerText = data.message;
                         this.invite_codes=data.invite_code
+                        document.getElementById('resultText_' + data_json.card_no).title=data.invite_code
                         return [data.invite_code, data.times_invite]
                  
                     } catch (error) {
@@ -369,6 +375,31 @@
                         
 
                     };
+                },
+                // 一键查询
+        
+                async one_query(){
+                    this.items.forEach(async (data_json) => {
+                        // console.log(data_json);
+                        const res_data = await this.submitOrder2(data_json)
+                        // console.log(res_data);
+                        // if (res_data[1] != 0) {
+                        //     await executeOrders2(res_data[0], res_data[1])
+                        // }
+                    
+                    });
+                },
+                copy_invite_code(event) {
+                    // 获取title值
+                    const titleValue = event.target.title;
+
+                    // 在这里可以使用 titleValue 做你想要的处理
+                    // 例如，可以将 titleValue 传递给其他函数或者进行其他逻辑处理
+                    console.log("Title值:", titleValue);
+                    this.invite_codes = titleValue
+
+                    // 然后继续执行你的复制逻辑
+                    // ...
                 }
                 
 
