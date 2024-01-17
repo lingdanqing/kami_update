@@ -94,6 +94,9 @@
         
         <button @click="one_play()">全部操作</button>
         <button @click="one_query()">全部查询</button>
+        <button onclick="history_zh()">历史账号</button>
+ 
+        <button onclick="clear_history()">清空记录</button>
         
         <style>
             #resulttimes {
@@ -118,7 +121,7 @@
                 
             </p>
             <p id="resultText"></p>
-
+            <p id="resultText">卡密数据</p>
             <div v-for="item in filteredItems" :key="item.card_no">
                 <p id="card_no" @click="submitOrder2(item)">{{item.card_no}}
                     <!-- <button @click="submitOrder2(item)">查看</button> -->
