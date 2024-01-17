@@ -487,7 +487,7 @@ def main2(card_no,pwd_decrypt,kind_id):
         
         if int(surplus_day) < surplus_day_mast:
             print("您的会员即将到期，请及时续费")
-            times_invite = int((surplus_day_mast-int(surplus_day))/2)
+            times_invite = int((surplus_day_mast-int(surplus_day))/2)+1
             print(f"您需要邀请{times_invite}位好友")
             return {"msg":f"剩余天数：{surplus_day},邀请码:{inviteCode_data},需要次数:{times_invite}","inviteCode":inviteCode_data,"times_invite":times_invite}
         else:
