@@ -535,7 +535,7 @@ def invite_now():
     res_data = post_vip2(invite_code=invite_code, fun_items=fun_items)
 
 
-    return jsonify(message=f'状态: {str(res_data["message"])}\n')
+    return jsonify(message=f'{str(res_data["message"])}\n')
 
 
 
