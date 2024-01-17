@@ -335,7 +335,7 @@ def start(email, password):
 
 def get_data(kind_id="505018174505029"):
     headers = {
-        'authorization': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDU0Njk5ODUsIm5iZiI6MTcwNTQ2OTk4NSwiZXhwIjoxNzA2MDc0Nzg1LCJzaWQiOjUwNTAwMjcxNDU5MTMwMSwidWlkIjo1MDUwMDI3MTQ1OTEzMDIsIm5hbWUiOiJweXRob25cdTVjMGZcdTVlOTcifQ.I8uxtQmfXC7_CG6LZ-EhF6819izd-pzPsC1fCeHbjVs',
+        'authorization': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDU1MTU2ODYsIm5iZiI6MTcwNTUxNTY4NiwiZXhwIjoxNzA2MTIwNDg2LCJzaWQiOjUwNTAwMjcxNDU5MTMwMSwidWlkIjo1MDUwMDI3MTQ1OTEzMDIsIm5hbWUiOiJweXRob25cdTVjMGZcdTVlOTcifQ.mNXdvTkVM5vLa48BCS9wZo_TPybLXKWchXurXwZdY3c',
         'dnt': '1',
         'origin': 'http://goofish.pro',
 
