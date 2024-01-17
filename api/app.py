@@ -491,7 +491,7 @@ def main2(card_no,pwd_decrypt,kind_id):
             print(f"您需要邀请{times_invite}位好友")
             return {"msg":f"剩余天数:{surplus_day}, 邀请码:{inviteCode_data}, 需要次数:{times_invite}","inviteCode":inviteCode_data,"times_invite":times_invite}
         else:
-            return {"msg":f"剩余天数：{surplus_day},邀请码:{inviteCode_data}","inviteCode":inviteCode_data,"times_invite":0}
+            return {"msg":f"剩余天数:{surplus_day}, 邀请码:{inviteCode_data}","inviteCode":inviteCode_data,"times_invite":0}
         #     for index in range(times_invite+1):
         #         post_vip2(invite_code=inviteCode_data,times_invite=times_invite)
 
