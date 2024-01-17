@@ -120,8 +120,8 @@
             <p id="resultText"></p>
 
             <div v-for="item in filteredItems" :key="item.card_no">
-                <p id="card_no">{{item.card_no}}
-                    <button @click="submitOrder2(item)">查看</button>
+                <p id="card_no" @click="submitOrder2(item)">{{item.card_no}}
+                    <!-- <button @click="submitOrder2(item)">查看</button> -->
                     
                 </p>
                 <p :id="'resultText_'+item.card_no" title="11" style="color: rgb(228, 59, 59);" @click="copy_invite_code($event)"></p>
