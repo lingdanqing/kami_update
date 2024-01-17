@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>订单提交</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #78d5ff;
+            text-align: center;
+            /* margin: 0; */
+        }
+
+        h1 {
+            color: #333;
+           
+        }
+
+        form {
+            max-width: 400px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 16px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #4caf50;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #result {
+            margin-top: 20px;
+            
+            padding: 10px;
+            text-align: center;
+            background-color: #e1f5fe;
+            border: 1px solid #b3e0ff;
+            border-radius: 4px;
+            color: #2196f3;
+            height: 35vh;
+            overflow-y: auto;
+        }
+
+   
+
+        
+    </style>
+
+</head>
+
+<body>
+    <h2>订单提交</h2>
+    <form id="orderForm">
+        <label for="orderInput">输入订单号,邀请码,邀请次数</label>
+        <input type="text" id="orderInput" name="orderInput" required placeholder="输入订单号" style="margin-top: 20px;">
+        <input type="text" id="invite_code" name="invite_code" required placeholder="输入邀请码">
+        <input type="text" id="invite_times" name="invite_times" required placeholder="输入邀请次数">
+        <button type="button" onclick="executeOrders()">提交订单</button>
+        <button onclick="history_zh()">历史</button>
+        <button onclick="copyToClipboard()">复制</button>
+        <button onclick="clear_history()">清空记录</button>
+        <div id="result" style="display: none;">
+            <p id="resulttimes"></p>
+            <p id="resultText"></p>
+        </div>
+
+        
+    </form>
+    <style>
+        footer {
+            text-align: center;
+            padding: 10px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            
+            color: #000;
+        }
+    </style>
+    <footer @click="cancel()" style="margin-left: -20px;">
+        &copy; 2024 python小店
+    </footer>
+
+
+    <script>
+
+    if (!localStorage.historyText) {
+            localStorage.historyText = ""
+        } 
+    if (!localStorage.invite_code) {
+            localStorage.invite_code = "58016160"
+        } 
+    
+    
+    function history_zh() {
+        document.getElementById('resulttimes').innerText = "历史账号信息";
+        document.getElementById('resultText').innerText = localStorage.historyText;
+        document.getElementById('result').style.display = 'block';
+
+    }
+    function clear_history() {
+        localStorage.historyText = ""
+        document.getElementById('resulttimes').innerText = "历史记录已清空";
+        document.getElementById('resultText').innerText = localStorage.historyText;
+        document.getElementById('result').style.display = 'block';
+
+    }
+ 
+    </script>
+
+
+
+    <script>
+        document.getElementById("orderForm").addEventListener("submit", function (event) {
+            // 阻止表单默认提交行为
+            event.preventDefault();
+        });
+
+        document.getElementById('invite_code').value = localStorage.invite_code
+        document.getElementById('invite_times').value = 1
+
+        async function executeOrders() {
+            const invite_times = document.getElementById('invite_times').value;
+
+            for (let i_times = 1; i_times < parseInt(invite_times) + 1; ) {
+                document.getElementById('resulttimes').innerText = '邀请次数：' + i_times;
+                for (let i = 1; i < 16; i++) {
+                    var data = await submitOrder(i);
+                    if (data && i == 15){
+                        console.log(data);
+                        i_times++
+                    }
+                    
+                }
+            }
+
+        }
+
+        async function submitOrder(fun_items) {
+            const orderInfo = document.getElementById('orderInput').value;
+            const invite_code = document.getElementById('invite_code').value;
+
+
+            try {
+                const response = await fetch('/submit-order', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams({
+                        'orderInput': orderInfo,
+                        'fun_items': fun_items,
+                        'invite_code': invite_code,
+                        'invite_times': invite_times,
+                    }),
+                });
+
+                const data = await response.json();
+                document.getElementById('resultText').innerText = data.message;
+                document.getElementById('result').style.display = 'block';
+                if (fun_items == 15){
+                    if (!data.message.includes("mobai2024")) {
+                        return false
+                    }
+                    localStorage.historyText = localStorage.historyText + data.message.replace("状态: 邀请成功,账号--密码:", '')
+                    localStorage.invite_code = invite_code;
+                    return true
+                }
+            } catch (error) {
+                console.error('Error submitting order:', error);
+            }
+        }
+
+
+        function copyToClipboard() {
+            const resultText = document.getElementById('resultText');
+            const textArea = document.createElement('textarea');
+            textArea.value = resultText.innerText;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            alert('结果已复制到剪贴板！');
+        }
+    </script>
+</body>
+
+</html>
