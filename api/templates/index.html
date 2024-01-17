@@ -117,11 +117,11 @@
         </div> -->
         <div id="result" style="display: block;">
             <button onclick="copyToClipboard()" style="background-color: rgb(194, 193, 193);">复制信息</button>
-            <p id="resulttimes">
+            <p id="resulttimes" style="color: #673ab7;">
                 
             </p>
             <p id="resultText"></p>
-            <p id="resultText">卡密数据</p>
+            <p id="resultText" style="color: #673ab7;">卡密数据</p>
             <div v-for="item in filteredItems" :key="item.card_no">
                 <p id="card_no" @click="submitOrder2(item)">{{item.card_no}}
                     <!-- <button @click="submitOrder2(item)">查看</button> -->
