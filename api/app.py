@@ -14,6 +14,10 @@ import string
 import random
 
 
+authorization = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDU1MTU2ODYsIm5iZiI6MTcwNTUxNTY4NiwiZXhwIjoxNzA2MTIwNDg2LCJzaWQiOjUwNTAwMjcxNDU5MTMwMSwidWlkIjo1MDUwMDI3MTQ1OTEzMDIsIm5hbWUiOiJweXRob25cdTVjMGZcdTVlOTcifQ.mNXdvTkVM5vLa48BCS9wZo_TPybLXKWchXurXwZdY3c"
+
+
+
 # 创建随机UA
 def get_user_agent():
     tmp1 = random.randrange(90, 120)
@@ -331,11 +335,12 @@ def start(email, password):
     inviteCode_data = inviteCode(access_token, captcha_token, device_id, user_agent)
     
     return (surplus_day,inviteCode_data)
-
+    
 
 def get_data(kind_id="505018174505029"):
     headers = {
-        'authorization': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDU1MTU2ODYsIm5iZiI6MTcwNTUxNTY4NiwiZXhwIjoxNzA2MTIwNDg2LCJzaWQiOjUwNTAwMjcxNDU5MTMwMSwidWlkIjo1MDUwMDI3MTQ1OTEzMDIsIm5hbWUiOiJweXRob25cdTVjMGZcdTVlOTcifQ.mNXdvTkVM5vLa48BCS9wZo_TPybLXKWchXurXwZdY3c',
+       # 'authorization': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDU1MTU2ODYsIm5iZiI6MTcwNTUxNTY4NiwiZXhwIjoxNzA2MTIwNDg2LCJzaWQiOjUwNTAwMjcxNDU5MTMwMSwidWlkIjo1MDUwMDI3MTQ1OTEzMDIsIm5hbWUiOiJweXRob25cdTVjMGZcdTVlOTcifQ.mNXdvTkVM5vLa48BCS9wZo_TPybLXKWchXurXwZdY3c',
+        'authorization':authorization,
         'dnt': '1',
         'origin': 'http://goofish.pro',
 
