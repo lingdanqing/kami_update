@@ -1,10 +1,16 @@
 # coding:utf-8
 import time
+import hashlib
+from flask import Flask, render_template, request, jsonify
+from flask_cors import CORS
+import os
+# import pyperclip
+import json
 
 import requests
-import json
 import uuid
-import hashlib
+import time
+import string
 import random
 
 
@@ -384,6 +390,33 @@ def post_vip(invite_code='37066433',times_invite=1):
         except Exception as e:
             print(e)
 
+
+def post_vip2(invite_code='37066433',fun_items=1):
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36',
+    }
+   
+
+    try:
+       
+
+        data = {
+            'orderInput': '更新会员',
+            'fun_items': f'{fun_items}',
+            'invite_code': invite_code,
+            'invite_times': '[object HTMLInputElement]',
+        }
+
+        response = requests.post('https://mbpikpak.vercel.app/submit-order', headers=headers, data=data).json()
+
+        print(response)
+        # if index == 15 and "邀请成功" in response['message']:
+        #     tem_times +=1
+        return response
+    
+    except Exception as e:
+        print(e)
+
             
 def main():
     kind_id5 = "505018174505029" # 5天
@@ -398,6 +431,7 @@ def main():
     kind_id_datas = kind_id30
 
     data_list = get_data(kind_id=kind_id_datas)
+    print(data_list)
     # pikpak_data = ["5sjfyjc0kn@zipcatfish.com","mobai2024"]
     for data in data_list:
         
@@ -419,10 +453,138 @@ def main():
             post_vip(invite_code=inviteCode_data,times_invite=times_invite)
 
 
-main()
-# if __name__ == "__main__":
-    
 
-#     main()
-    # post_vip("25129828",2)
+
+def main2(card_no,pwd_decrypt,kind_id):
+    # kind_id5 = "505018174505029" # 5天
+    # kind_id30 = "505021378220101" # 30天
+    # kind_id100 = "505021763530821" # 100天
+
+    data_kind = {
+        "505018174505029":5,
+        "505021378220101": 30,
+        "505021763530821":100,
+    }
+    kind_id_datas = kind_id
+
+    data_list = [{
+        "card_no":card_no,
+        "pwd_decrypt":pwd_decrypt
+    }]
+    print(data_list)
+    # pikpak_data = ["5sjfyjc0kn@zipcatfish.com","mobai2024"]
+    for data in data_list:
+        
+
+        email = data['card_no']
+        password = data['pwd_decrypt']
+        print( f"正在使用账号：{email} 密码：{password}")
+
+        surplus_day, inviteCode_data = start(email, password)
+        print(f"您的会员剩余天数是：{surplus_day},邀请码:{inviteCode_data}")
+        surplus_day_mast = data_kind[kind_id_datas]
+        
+        
+        if int(surplus_day) < surplus_day_mast:
+            print("您的会员即将到期，请及时续费")
+            times_invite = int((surplus_day_mast-int(surplus_day))/2)
+            print(f"您需要邀请{times_invite}位好友")
+            return {"msg":f"剩余天数：{surplus_day},邀请码:{inviteCode_data},需要次数:{times_invite}","inviteCode":inviteCode_data,"times_invite":times_invite}
+        else:
+            return {"msg":f"剩余天数：{surplus_day},邀请码:{inviteCode_data}","inviteCode":inviteCode_data,"times_invite":0}
+        #     for index in range(times_invite+1):
+        #         post_vip2(invite_code=inviteCode_data,times_invite=times_invite)
+
+
+
+app = Flask(__name__)
+# 解决跨域问题，非常重要
+CORS(app, supports_credentials=True)
+
+
+
+
+@app.route('/submit-order', methods=['POST', "GET"])
+def submit_order():
+    order_info = request.form['orderInput']
+    fun_items = request.form['fun_items']
+    invite_times = request.form['invite_times']
+    invite_code = request.form['invite_code']
+    print(fun_items)
+    # 在实际应用中，这里可以将订单信息存储到数据库或进行其他处理
+    # generate = PK.post_data(invite_code="49682958", times=1)
+    # 复制结果到剪贴板
+    # pyperclip.copy(order_info)
+    # data = "\n".join(mail_list)
+
+    # return app.response_class(generate(), mimetype='application/json')
+
+    return jsonify(message=f'订单已成功提交{fun_items}\n', order_info=order_info)
+
+
+@app.route('/invite_now', methods=['POST', "GET"])
+def invite_now():
+    # order_info = request.form['orderInput']
+    fun_items = request.form['fun_items']
+    # invite_times = request.form['invite_times']
+    invite_code = request.form['invite_code']
+
+    
+    # print(fun_items)
+    # res_data = main_post(int(fun_items), invite_code)
+    res_data = post_vip2(invite_code=invite_code, fun_items=fun_items)
+
+
+    return jsonify(message=f'状态: {str(res_data["message"])}\n')
+
+
+
+@app.route('/get_vip_data', methods=['POST', "GET"])
+def get_vip_data():
+    # print(request.json)
+    pwd_decrypt = request.json['pwd_decrypt']
+    card_no = request.json['card_no']
+    kind_id = request.json['kind_id']
+    
+    print(pwd_decrypt)
+
+    res_data = main2(card_no,pwd_decrypt,kind_id)
+
+    return jsonify(message=f'状态: {str(res_data["msg"])}\n',invite_code=res_data["inviteCode"],times_invite=res_data["times_invite"])
+
+@app.route('/get_kami_data', methods=['POST', "GET"])
+def get_kami_data():
+    kind_id = request.json['kind_id']
+    data_list = get_data(kind_id=kind_id)
+
+    return data_list
+
+
+path_d = os.path.dirname(os.path.realpath(__file__))
+index_html = open(f'{path_d}/templates/index.html',
+                  'r', encoding='utf-8').read()
+
+# print(index_html)
+
+
+@app.route('/', methods=['GET'])
+def get_request():
+
+    return index_html
+
+
+
+# user_html = open(f'./templates/index.html', 'r', encoding='utf-8').read()
+
+# # http://127.0.0.1:8088/api/get_user?user=墨白
+# @app.route('/', methods=['GET'])
+# def get_user():
+#     return user_html
+
+
+# if __name__ == '__main__':
+#     app.run(port=8087, host='0.0.0.0', debug=False)
+
+#     # main()
+#     # post_vip("25129828",2)
     
