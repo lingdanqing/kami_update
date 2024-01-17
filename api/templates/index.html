@@ -342,7 +342,7 @@
                     }
                 },
                 async submitOrder2(data_json) {
-
+                    document.getElementById('resultText_' + data_json.card_no).innerText = "查询中";
                     try {
                         const response = await fetch('/get_vip_data', {
                             method: 'POST',
@@ -361,6 +361,8 @@
                         document.getElementById('resultText_' + data_json.card_no).innerText = data.message;
                         this.invite_codes=data.invite_code
                         document.getElementById('resultText_' + data_json.card_no).title=data.invite_code
+
+                        
                         return [data.invite_code, data.times_invite]
                  
                     } catch (error) {
