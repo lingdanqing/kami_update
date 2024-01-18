@@ -14,8 +14,16 @@ import string
 import random
 
 
-authorization = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDU1NjQ0MDAsIm5iZiI6MTcwNTU2NDQwMCwiZXhwIjoxNzA2MTY5MjAwLCJzaWQiOjUwNTAwMjcxNDU5MTMwMSwidWlkIjo1MDUwMDI3MTQ1OTEzMDIsIm5hbWUiOiJweXRob25cdTVjMGZcdTVlOTcifQ.t_Gf1xr2XkGG-4dVnwqOMoGbsSqy2966rvLgibe5M8c"
-xy_authorization = {"authorization":authorization}
+user_data = {
+    "authorization1":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDU1NjQ0MDAsIm5iZiI6MTcwNTU2NDQwMCwiZXhwIjoxNzA2MTY5MjAwLCJzaWQiOjUwNTAwMjcxNDU5MTMwMSwidWlkIjo1MDUwMDI3MTQ1OTEzMDIsIm5hbWUiOiJweXRob25cdTVjMGZcdTVlOTcifQ.t_Gf1xr2XkGG-4dVnwqOMoGbsSqy2966rvLgibe5M8c",
+    "authorization2": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDU1ODI3NDEsIm5iZiI6MTcwNTU4Mjc0MSwiZXhwIjoxNzA2MTg3NTQxLCJzaWQiOjUwNTYzNjIwNzMxMjk2NSwidWlkIjo1MDU2MzYyMDczMTI5NjYsIm5hbWUiOiJcdTVjMGZcdTU4YThcdTVlOTdcdTk0ZmEifQ.2BFJcluASK3BqJMPCkJY3nwyEuT5l8UwnZfFcLRjBb0"
+}
+
+xy_authorization = {"authorization": user_data["authorization2"]}
+def switch_user():
+    xy_authorization["authorization"] = user_data["authorization1"] if xy_authorization["authorization"] == user_data["authorization2"] else user_data["authorization2"]
+    # return xy_authorization
+
 
 # 创建随机UA
 def get_user_agent():
@@ -446,6 +454,8 @@ def main():
         "505018174505029": 5,
         "505021378220101": 30,
         "505021763530821": 100,
+        # 账号2的5天会员
+        "505657512730693": 5,
     }
     kind_id_datas = kind_id30
 
@@ -480,6 +490,8 @@ def main2(card_no, pwd_decrypt, kind_id):
         "505018174505029": 5,
         "505021378220101": 30,
         "505021763530821": 100,
+        # 账号2的5天会员
+        "505657512730693": 5,
     }
     kind_id_datas = kind_id
 
@@ -514,6 +526,11 @@ app = Flask(__name__)
 # 解决跨域问题，非常重要
 CORS(app, supports_credentials=True)
 
+
+@app.route('/switch_users', methods=['POST', "GET"])
+def switch_users():
+    switch_user()
+    return {"message": "切换成功"}
 
 def get_xy_key():
     headers = {
