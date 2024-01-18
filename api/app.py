@@ -330,8 +330,12 @@ def start(email, password):
     captcha_token = reward_init(device_id, captcha_token, captcha_sign, timestamp, aliyungf_tc, user_agent, client_id2)[
         'captcha_token']
     # data.vipItem[0].surplus_day
-    surplus_day = get_vip_datas(user_agent,device_id,access_token,captcha_token)['data']['vipItem'][0]['surplus_day']
     
+    surplus_day_json = get_vip_datas(user_agent,device_id,access_token,captcha_token)['data']['vipItem'][0]
+    if "surplus_day" in surplus_day_json:
+        surplus_day = surplus_day_json['surplus_day']
+    else:
+        surplus_day = 0
     inviteCode_data = inviteCode(access_token, captcha_token, device_id, user_agent)
     
     return (surplus_day,inviteCode_data)
