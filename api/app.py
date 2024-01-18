@@ -15,8 +15,7 @@ import random
 
 
 authorization = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDU1MTU2ODYsIm5iZiI6MTcwNTUxNTY4NiwiZXhwIjoxNzA2MTIwNDg2LCJzaWQiOjUwNTAwMjcxNDU5MTMwMSwidWlkIjo1MDUwMDI3MTQ1OTEzMDIsIm5hbWUiOiJweXRob25cdTVjMGZcdTVlOTcifQ.mNXdvTkVM5vLa48BCS9wZo_TPybLXKWchXurXwZdY3c"
-
-
+xy_authorization = {"authorization":authorization}
 
 # 创建随机UA
 def get_user_agent():
@@ -251,9 +250,8 @@ def reward_init(device_id, captcha_token, captcha_sign, timestamp, aliyungf_tc, 
     return json.loads(response.text)
 
 
+def get_vip_datas(user_agent, device_id, access_token, captcha_token):
 
-def get_vip_datas(user_agent,device_id,access_token,captcha_token):
-    
     headers = {
         "User-Agent": user_agent,
         "X-Device-Id": device_id,
@@ -265,13 +263,14 @@ def get_vip_datas(user_agent,device_id,access_token,captcha_token):
         # "cookie": "aliyungf_tc=" + aliyungf_tc,
         # "Content-Length": "149",
         # "Host": "user.mypikpak.com",
-  
+
 
         "Connection": "Keep-Alive",
         # "Accept-Encoding": "gzip"
     }
     # print(headers)
-    dd = requests.get("https://api-drive.mypikpak.com/vip/v1/vip/info", headers=headers)
+    dd = requests.get(
+        "https://api-drive.mypikpak.com/vip/v1/vip/info", headers=headers)
     # print(dd.json())
     return dd.json()
 
@@ -298,12 +297,15 @@ def inviteCode(access_token, captcha_token, device_id, user_agent):
             'x-alt-capability': '3',
             'Content-Type': 'application/x-www-form-urlencoded',
         }
-        
-        response = requests.get('https://api-drive.mypikpak.com/vip/v1/activity/inviteCode', headers=headers)
-        
+
+        response = requests.get(
+            'https://api-drive.mypikpak.com/vip/v1/activity/inviteCode', headers=headers)
+
         return response.json()["code"]
 
 # 运行程序
+
+
 def start(email, password):
     # 模拟设备基本配置
     client_id1 = "YUMx5nI8ZU8Ap8pm"
@@ -330,21 +332,23 @@ def start(email, password):
     captcha_token = reward_init(device_id, captcha_token, captcha_sign, timestamp, aliyungf_tc, user_agent, client_id2)[
         'captcha_token']
     # data.vipItem[0].surplus_day
-    
-    surplus_day_json = get_vip_datas(user_agent,device_id,access_token,captcha_token)['data']['vipItem'][0]
+
+    surplus_day_json = get_vip_datas(
+        user_agent, device_id, access_token, captcha_token)['data']['vipItem'][0]
     if "surplus_day" in surplus_day_json:
         surplus_day = surplus_day_json['surplus_day']
     else:
         surplus_day = 0
-    inviteCode_data = inviteCode(access_token, captcha_token, device_id, user_agent)
-    
-    return (surplus_day,inviteCode_data)
-    
+    inviteCode_data = inviteCode(
+        access_token, captcha_token, device_id, user_agent)
+
+    return (surplus_day, inviteCode_data)
+
 
 def get_data(kind_id="505018174505029"):
     headers = {
-       # 'authorization': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDU1MTU2ODYsIm5iZiI6MTcwNTUxNTY4NiwiZXhwIjoxNzA2MTIwNDg2LCJzaWQiOjUwNTAwMjcxNDU5MTMwMSwidWlkIjo1MDUwMDI3MTQ1OTEzMDIsIm5hbWUiOiJweXRob25cdTVjMGZcdTVlOTcifQ.mNXdvTkVM5vLa48BCS9wZo_TPybLXKWchXurXwZdY3c',
-        'authorization':authorization,
+        # 'authorization': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDU1MTU2ODYsIm5iZiI6MTcwNTUxNTY4NiwiZXhwIjoxNzA2MTIwNDg2LCJzaWQiOjUwNTAwMjcxNDU5MTMwMSwidWlkIjo1MDUwMDI3MTQ1OTEzMDIsIm5hbWUiOiJweXRob25cdTVjMGZcdTVlOTcifQ.mNXdvTkVM5vLa48BCS9wZo_TPybLXKWchXurXwZdY3c',
+        'authorization': xy_authorization["authorization"],
         'dnt': '1',
         'origin': 'http://goofish.pro',
 
@@ -355,24 +359,27 @@ def get_data(kind_id="505018174505029"):
         'idx': '1',
         'count': '0',
         'size': '25',
-        'kind_id': kind_id,# 5天vip
+        'kind_id': kind_id,  # 5天vip
         'sale_status': '1',
     }
     response = requests.get(
         'https://api.goofish.pro/api/kam/storage/pager', params=params, headers=headers)
 
-    # print(response.json())
+    print(response.json())
     data_json = response.json()
     if "data" not in data_json:
-        return []
+        get_xy_key()
+        get_data(kind_id)
+        # return []
 
     data_list = data_json["data"]
-    if len(data_list)==0:
+    if len(data_list) == 0:
         return []
- 
+
     return data_list
 
-def post_vip(invite_code='37066433',times_invite=1):
+
+def post_vip(invite_code='37066433', times_invite=1):
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36',
     }
@@ -388,26 +395,25 @@ def post_vip(invite_code='37066433',times_invite=1):
                     'invite_times': '[object HTMLInputElement]',
                 }
 
-                response = requests.post('https://mbpikpak.vercel.app/submit-order', headers=headers, data=data).json()
+                response = requests.post(
+                    'https://mbpikpak.vercel.app/submit-order', headers=headers, data=data).json()
 
                 print(response)
                 if index == 15 and "邀请成功" in response['message']:
-                    tem_times +=1
-            
-            if tem_times==times_invite:
+                    tem_times += 1
+
+            if tem_times == times_invite:
                 return True
         except Exception as e:
             print(e)
 
 
-def post_vip2(invite_code='37066433',fun_items=1):
+def post_vip2(invite_code='37066433', fun_items=1):
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36',
     }
-   
 
     try:
-       
 
         data = {
             'orderInput': '更新会员',
@@ -416,26 +422,27 @@ def post_vip2(invite_code='37066433',fun_items=1):
             'invite_times': '[object HTMLInputElement]',
         }
 
-        response = requests.post('https://mbpikpak.vercel.app/submit-order', headers=headers, data=data).json()
+        response = requests.post(
+            'https://mbpikpak.vercel.app/submit-order', headers=headers, data=data).json()
 
         print(response)
         # if index == 15 and "邀请成功" in response['message']:
         #     tem_times +=1
         return response
-    
+
     except Exception as e:
         print(e)
 
-            
+
 def main():
-    kind_id5 = "505018174505029" # 5天
-    kind_id30 = "505021378220101" # 30天
-    kind_id100 = "505021763530821" # 100天
+    kind_id5 = "505018174505029"  # 5天
+    kind_id30 = "505021378220101"  # 30天
+    kind_id100 = "505021763530821"  # 100天
 
     data_kind = {
-        "505018174505029":5,
+        "505018174505029": 5,
         "505021378220101": 30,
-        "505021763530821":100,
+        "505021763530821": 100,
     }
     kind_id_datas = kind_id30
 
@@ -443,67 +450,61 @@ def main():
     print(data_list)
     # pikpak_data = ["5sjfyjc0kn@zipcatfish.com","mobai2024"]
     for data in data_list:
-        
 
         email = data['card_no']
         password = data['pwd_decrypt']
-        print( f"正在使用账号：{email} 密码：{password}")
+        print(f"正在使用账号：{email} 密码：{password}")
 
         surplus_day, inviteCode_data = start(email, password)
         print(f"您的会员剩余天数是：{surplus_day},邀请码:{inviteCode_data}")
         surplus_day_mast = data_kind[kind_id_datas]
-        
+
         if int(surplus_day) < surplus_day_mast:
             print("您的会员即将到期，请及时续费")
             times_invite = int((surplus_day_mast-int(surplus_day))/2)
             print(f"您需要邀请{times_invite}位好友")
 
             # for index in range(times_invite+1):
-            post_vip(invite_code=inviteCode_data,times_invite=times_invite)
+            post_vip(invite_code=inviteCode_data, times_invite=times_invite)
 
 
-
-
-def main2(card_no,pwd_decrypt,kind_id):
+def main2(card_no, pwd_decrypt, kind_id):
     # kind_id5 = "505018174505029" # 5天
     # kind_id30 = "505021378220101" # 30天
     # kind_id100 = "505021763530821" # 100天
 
     data_kind = {
-        "505018174505029":5,
+        "505018174505029": 5,
         "505021378220101": 30,
-        "505021763530821":100,
+        "505021763530821": 100,
     }
     kind_id_datas = kind_id
 
     data_list = [{
-        "card_no":card_no,
-        "pwd_decrypt":pwd_decrypt
+        "card_no": card_no,
+        "pwd_decrypt": pwd_decrypt
     }]
     print(data_list)
     # pikpak_data = ["5sjfyjc0kn@zipcatfish.com","mobai2024"]
     for data in data_list:
-        
 
         email = data['card_no']
         password = data['pwd_decrypt']
-        print( f"正在使用账号：{email} 密码：{password}")
+        print(f"正在使用账号：{email} 密码：{password}")
 
         surplus_day, inviteCode_data = start(email, password)
         print(f"您的会员剩余天数是：{surplus_day},邀请码:{inviteCode_data}")
         surplus_day_mast = data_kind[kind_id_datas]
-        
-        
+
         if int(surplus_day) < surplus_day_mast:
             print("您的会员即将到期，请及时续费")
             times_invite = int((surplus_day_mast-int(surplus_day))/2)+1
             print(f"您需要邀请{times_invite}位好友")
-            return {"msg":f"剩余天数:{surplus_day}, 邀请码:{inviteCode_data}, 需要次数:{times_invite}","inviteCode":inviteCode_data,"times_invite":times_invite}
+            return {"msg": f"剩余天数:{surplus_day}, 邀请码:{inviteCode_data}, 需要次数:{times_invite}", "inviteCode": inviteCode_data, "times_invite": times_invite}
         else:
-            return {"msg":f"剩余天数:{surplus_day}, 邀请码:{inviteCode_data}","inviteCode":inviteCode_data,"times_invite":0}
+            return {"msg": f"剩余天数:{surplus_day}, 邀请码:{inviteCode_data}", "inviteCode": inviteCode_data, "times_invite": 0}
         #     for index in range(times_invite+1):
         #         post_vip2(invite_code=inviteCode_data,times_invite=times_invite)
-
 
 
 app = Flask(__name__)
@@ -511,6 +512,43 @@ app = Flask(__name__)
 CORS(app, supports_credentials=True)
 
 
+def get_xy_key():
+    headers = {
+        'authority': 'api.goofish.pro',
+        'accept': 'application/json',
+        'accept-language': 'zh-CN,zh;q=0.9',
+        'content-type': 'application/x-www-form-urlencoded',
+        'dnt': '1',
+        'origin': 'http://goofish.pro',
+        'referer': 'http://goofish.pro/login?redirectUrl=%2Fkam%2Fkind%2Fmanage-card%3Fkid%3D505018174505029',
+        'sec-ch-ua': '"Not?A_Brand";v="8", "Chromium";v="108", "Google Chrome";v="108"',
+        'sec-ch-ua-mobile': '?0',
+        'sec-ch-ua-platform': '"Windows"',
+        'sec-fetch-dest': 'empty',
+        'sec-fetch-mode': 'cors',
+        'sec-fetch-site': 'cross-site',
+        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36',
+    }
+    data = {
+        'key': 'TVRneU1EZzJPRE00TWpVPQ==',
+        'iv': 'GvqfVCG6k4pr1dThPzKgFA==',
+        'img_code': '1234',
+        'channel': '1',
+    }
+
+    response = requests.post(
+        'https://api.goofish.pro/api/user/login/passwordLogin', headers=headers, data=data)
+    print(response.json())
+    xy_authorization["authorization"] = response.json()['data']['access_token']
+    return xy_authorization["authorization"]
+
+
+@app.route('/goofish_key', methods=['POST', "GET"])
+def goofish_key():
+    try:
+        return {"token": get_xy_key()}
+    except:
+        return {"token": ""}
 
 
 @app.route('/submit-order', methods=['POST', "GET"])
@@ -538,14 +576,11 @@ def invite_now():
     # invite_times = request.form['invite_times']
     invite_code = request.form['invite_code']
 
-    
     # print(fun_items)
     # res_data = main_post(int(fun_items), invite_code)
     res_data = post_vip2(invite_code=invite_code, fun_items=fun_items)
 
-
     return jsonify(message=f'{str(res_data["message"])}\n')
-
 
 
 @app.route('/get_vip_data', methods=['POST', "GET"])
@@ -554,12 +589,13 @@ def get_vip_data():
     pwd_decrypt = request.json['pwd_decrypt']
     card_no = request.json['card_no']
     kind_id = request.json['kind_id']
-    
+
     print(pwd_decrypt)
 
-    res_data = main2(card_no,pwd_decrypt,kind_id)
+    res_data = main2(card_no, pwd_decrypt, kind_id)
 
-    return jsonify(message=f'{str(res_data["msg"])}\n',invite_code=res_data["inviteCode"],times_invite=res_data["times_invite"])
+    return jsonify(message=f'{str(res_data["msg"])}\n', invite_code=res_data["inviteCode"], times_invite=res_data["times_invite"])
+
 
 @app.route('/get_kami_data', methods=['POST', "GET"])
 def get_kami_data():
@@ -583,17 +619,10 @@ def get_request():
 
 
 
-# user_html = open(f'./templates/index.html', 'r', encoding='utf-8').read()
-
-# # http://127.0.0.1:8088/api/get_user?user=墨白
-# @app.route('/', methods=['GET'])
-# def get_user():
-#     return user_html
-
 
 # if __name__ == '__main__':
-#     app.run(port=8087, host='0.0.0.0', debug=False)
-
+#     # app.run(port=8087, host='0.0.0.0', debug=False)
+#     # get_xy_key()
+#     get_data()
 #     # main()
 #     # post_vip("25129828",2)
-    
