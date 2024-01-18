@@ -567,8 +567,8 @@ def get_xy_key():
 def goofish_key():
     try:
         res_data = get_data()
-        if len(res_data)!=0:
-            return {"token": xy_authorization["authorization"]}
+        # if len(res_data)!=0:
+        return {"token": xy_authorization["authorization"]}
     except:
         return {"token": ""}
 
