@@ -33,7 +33,8 @@
             color: #555;
         }
 
-        select,input {
+        select,
+        input {
             width: 100%;
             padding: 8px;
             margin-bottom: 16px;
@@ -75,83 +76,85 @@
 
 <body>
     <div id="app">
-    <!-- <h4>卡密查询</h4> -->
-    <form id="orderForm">
-        <label for="orderInput">卡密查询系统</label>
-        <!-- <input type="text" id="orderInput" name="orderInput" required placeholder="输入kind_id" style="margin-top: 20px;"> -->
-        <select id="type" v-model="kind_id" style="background-color: rgb(228, 228, 228);">
-            <option value="00" style="background-color: rgb(158, 158, 158);">请选择卡密天数</option>
-            <option value="505018174505029">5天</option>
-            <option value="505021378220101">30天</option>
-            <option value="505021763530821">100天</option>
-        </select>
+        <!-- <h4>卡密查询</h4> -->
+        <form id="orderForm">
+            <label for="orderInput" @click="switch_user()">卡密查询系统</label>
+            <!-- <input type="text" id="orderInput" name="orderInput" required placeholder="输入kind_id" style="margin-top: 20px;"> -->
+            <select id="type" v-model="kind_id" style="background-color: rgb(228, 228, 228);">
+                <option value="00" style="background-color: rgb(158, 158, 158);">请选择卡密天数</option>
+                <option value="505018174505029">5天</option>
+                <option value="505021378220101">30天</option>
+                <option value="505021763530821">100天</option>
+            </select>
 
-        <input type="text" v-model="invite_codes" id="invite_code" name="invite_code" required placeholder="输入邀请码">
+            <input type="text" v-model="invite_codes" id="invite_code" name="invite_code" required placeholder="输入邀请码">
 
-        <input type="text" v-model="invite_times" id="invite_times" name="invite_times" required placeholder="输入邀请次数">
-        <button type="button" @click="fetchData()">查询卡密</button>
-        <button onclick="executeOrders()">邀请用户</button>
-        
-        <button @click="one_play()">全部操作</button>
-        <button @click="one_query()">全部查询</button>
-        <button onclick="history_zh()">历史账号</button>
- 
-        <button onclick="clear_history()">清空记录</button>
-        
-        <style>
-            #resulttimes {
-                display: inline-block;
-                /* 让 p 标签和 button 横向排列 */
-            }
+            <input type="text" v-model="invite_times" id="invite_times" name="invite_times" required
+                placeholder="输入邀请次数">
+            <button type="button" @click="fetchData()">查询卡密</button>
+            <button onclick="executeOrders()">邀请用户</button>
 
-            button {
-                display: inline-block;
-                /* 让 button 和 p 标签横向排列 */
-                margin-left: 10px;
-                /* 可以根据需要调整按钮与文本之间的间距 */
-            }
-        </style>
-        <!-- <div id="result" style="display: none;">
+            <button @click="one_play()">全部操作</button>
+            <button @click="one_query()">全部查询</button>
+            <button onclick="history_zh()">历史账号</button>
+
+            <button onclick="clear_history()">清空记录</button>
+
+            <style>
+                #resulttimes {
+                    display: inline-block;
+                    /* 让 p 标签和 button 横向排列 */
+                }
+
+                button {
+                    display: inline-block;
+                    /* 让 button 和 p 标签横向排列 */
+                    margin-left: 10px;
+                    /* 可以根据需要调整按钮与文本之间的间距 */
+                }
+            </style>
+            <!-- <div id="result" style="display: none;">
             <p id="resulttimes"></p>
             <p id="resultText"></p>
         </div> -->
-        <div id="result" style="display: block;">
-            <button onclick="copyToClipboard()" style="background-color: rgb(194, 193, 193);">复制信息</button>
-            <p id="resulttimes" style="color: #673ab7;">
-                
-            </p>
-            <p id="resultText"></p>
-            <p id="resultText" style="color: #673ab7;">卡密数据</p>
-            <div v-for="item in filteredItems" :key="item.card_no">
-                <p id="card_no" @click="submitOrder2(item)">{{item.card_no}}
-                    <!-- <button @click="submitOrder2(item)">查看</button> -->
-                    
+            <div id="result" style="display: block;">
+                <button onclick="copyToClipboard()" style="background-color: rgb(194, 193, 193);">复制信息</button>
+                <p id="resulttimes" style="color: #673ab7;">
+
                 </p>
-                <p :id="'resultText_'+item.card_no" title="11" style="color: rgb(228, 59, 59);" @click="copy_invite_code($event)"></p>
+                <p id="resultText"></p>
+                <p id="resultText" style="color: #673ab7;">卡密数据</p>
+                <div v-for="item in filteredItems" :key="item.card_no">
+                    <p id="card_no" @click="submitOrder2(item)">{{item.card_no}}
+                        <!-- <button @click="submitOrder2(item)">查看</button> -->
+
+                    </p>
+                    <p :id="'resultText_'+item.card_no" title="11" style="color: rgb(228, 59, 59);"
+                        @click="copy_invite_code($event)"></p>
+                </div>
+
             </div>
 
-        </div>
-       
 
 
 
-    </form>
-    <style>
-        footer {
-            text-align: center;
-            padding: 10px;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
+        </form>
+        <style>
+            footer {
+                text-align: center;
+                padding: 10px;
+                position: fixed;
+                bottom: 0;
+                width: 100%;
 
-            color: #000;
-        }
-    </style>
-    <footer style="margin-left: -20px;">
-        &copy; 2024
-        <a href="https://mbpikpak.vercel.app/">python小店</a>
-    </footer>
-</div>
+                color: #000;
+            }
+        </style>
+        <footer style="margin-left: -20px;">
+            &copy; 2024
+            <a href="https://mbpikpak.vercel.app/">python小店</a>
+        </footer>
+    </div>
 
     <script>
 
@@ -230,7 +233,7 @@
 
         async function submitOrder9(fun_items, invite_code) {
             // const orderInfo = document.getElementById('orderInput').value;
-            
+
 
 
             try {
@@ -240,7 +243,7 @@
                         'Content-Type': 'application/x-www-form-urlencoded',
                     },
                     body: new URLSearchParams({
-                         'orderInput': 'hhh',
+                        'orderInput': 'hhh',
                         'fun_items': fun_items,
                         'invite_code': invite_code,
                         // 'invite_times': invite_times,
@@ -283,13 +286,13 @@
                 return {
                     items: data_list,
                     fieldNames: [],
-                    kind_id:"505018174505029",
+                    kind_id: "505018174505029",
                     formData: {},
                     editingItemId: null,
                     searchTerm: "",
                     kami_price: "00",
-                    invite_codes:"123456",
-                    invite_times:"1",
+                    invite_codes: "123456",
+                    invite_times: "1",
                     kami_counts: "",
                     db_name: "kami_all",
                     isedit_Item: "1",
@@ -317,9 +320,30 @@
             },
 
             methods: {
-                async fetchData(){
 
-                    
+                async switch_user() {
+
+                    try {
+                        const response = await fetch('/switch_users', {
+                            method: 'POST',
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify({
+                                'kind_id': this.kind_id,
+
+                            }),
+                        });
+
+                        const data = await response.json();
+                        alert(data.message);
+                    } catch (error) {
+                        console.error('Error submitting order:', error);
+                    }
+                },
+                async fetchData() {
+
+
                     // const kind_id = document.getElementById('orderInput').value;
                     // const invite_code = document.getElementById('invite_code').value;
                     try {
@@ -330,7 +354,7 @@
                             },
                             body: JSON.stringify({
                                 'kind_id': this.kind_id,
-                                
+
 
                             }),
                         });
@@ -353,24 +377,24 @@
                                 'kind_id': this.kind_id,
                                 'card_no': data_json.card_no,
                                 'pwd_decrypt': data_json.pwd_decrypt,
-                                
+
                             }),
                         });
 
                         const data = await response.json();
                         document.getElementById('resultText_' + data_json.card_no).innerText = data.message;
                         // this.invite_codes=data.invite_code
-                        document.getElementById('resultText_' + data_json.card_no).title=data.invite_code
+                        document.getElementById('resultText_' + data_json.card_no).title = data.invite_code
 
-                        
+
                         return [data.invite_code, data.times_invite]
-                 
+
                     } catch (error) {
                         console.error('Error submitting order:', error);
                     }
                 },
                 // 一键执行
-                async one_play(){
+                async one_play() {
                     for (const data_json of this.items) {
                         console.log(data_json);
                         const res_data = await this.submitOrder2(data_json)
@@ -378,13 +402,13 @@
                         if (res_data[1] != 0) {
                             await executeOrders2(res_data[0], res_data[1])
                         }
-                        
+
 
                     };
                 },
                 // 一键查询
-        
-                async one_query(){
+
+                async one_query() {
                     this.items.forEach(async (data_json) => {
                         // console.log(data_json);
                         const res_data = await this.submitOrder2(data_json)
@@ -392,7 +416,7 @@
                         // if (res_data[1] != 0) {
                         //     await executeOrders2(res_data[0], res_data[1])
                         // }
-                    
+
                     });
                 },
                 copy_invite_code(event) {
@@ -407,7 +431,7 @@
                     // 然后继续执行你的复制逻辑
                     // ...
                 }
-                
+
 
             },
         });
