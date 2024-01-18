@@ -362,21 +362,24 @@ def get_data(kind_id="505018174505029"):
         'kind_id': kind_id,  # 5天vip
         'sale_status': '1',
     }
-    response = requests.get(
-        'https://api.goofish.pro/api/kam/storage/pager', params=params, headers=headers)
 
-    print(response.json())
-    data_json = response.json()
-    if "data" not in data_json:
-        get_xy_key()
-        get_data(kind_id)
-        # return []
+    while True:
+        response = requests.get(
+            'https://api.goofish.pro/api/kam/storage/pager', params=params, headers=headers)
 
-    data_list = data_json["data"]
-    if len(data_list) == 0:
-        return []
+        # print(response.json())
+        data_json = response.json()
+        if "data" not in data_json:
+            get_xy_key()
+            headers["authorization"] = xy_authorization["authorization"]
+            # return []
+            continue
 
-    return data_list
+        data_list = data_json["data"]
+        if len(data_list) == 0:
+            return []
+
+        return data_list
 
 
 def post_vip(invite_code='37066433', times_invite=1):
@@ -546,7 +549,9 @@ def get_xy_key():
 @app.route('/goofish_key', methods=['POST', "GET"])
 def goofish_key():
     try:
-        return {"token": get_xy_key()}
+        res_data = get_data()
+        if len(res_data)!=0:
+            return {"token": xy_authorization["authorization"]}
     except:
         return {"token": ""}
 
@@ -623,6 +628,6 @@ def get_request():
 # if __name__ == '__main__':
 #     # app.run(port=8087, host='0.0.0.0', debug=False)
 #     # get_xy_key()
-#     get_data()
+#     print(get_data())
 #     # main()
 #     # post_vip("25129828",2)
