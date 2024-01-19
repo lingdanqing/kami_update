@@ -203,6 +203,11 @@
                 document.getElementById('resulttimes').innerText = '邀请次数：' + i_times;
                 for (let i = 1; i < 16; i++) {
                     var data = await submitOrder9(i, invite_code);
+                    if (data == false) {
+                        i_times++
+                        alert("请求出错")
+                        return false;
+                    }
                     if (data && i == 15) {
                         console.log(data);
                         i_times++
