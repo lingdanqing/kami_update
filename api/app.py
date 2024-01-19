@@ -14,6 +14,8 @@ import string
 import random
 
 
+# authorization = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDU1NjQ0MDAsIm5iZiI6MTcwNTU2NDQwMCwiZXhwIjoxNzA2MTY5MjAwLCJzaWQiOjUwNTAwMjcxNDU5MTMwMSwidWlkIjo1MDUwMDI3MTQ1OTEzMDIsIm5hbWUiOiJweXRob25cdTVjMGZcdTVlOTcifQ.t_Gf1xr2XkGG-4dVnwqOMoGbsSqy2966rvLgibe5M8c"
+# authorization = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDU1ODI3NDEsIm5iZiI6MTcwNTU4Mjc0MSwiZXhwIjoxNzA2MTg3NTQxLCJzaWQiOjUwNTYzNjIwNzMxMjk2NSwidWlkIjo1MDU2MzYyMDczMTI5NjYsIm5hbWUiOiJcdTVjMGZcdTU4YThcdTVlOTdcdTk0ZmEifQ.2BFJcluASK3BqJMPCkJY3nwyEuT5l8UwnZfFcLRjBb0"
 user_data = {
     "authorization1":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDU1NjQ0MDAsIm5iZiI6MTcwNTU2NDQwMCwiZXhwIjoxNzA2MTY5MjAwLCJzaWQiOjUwNTAwMjcxNDU5MTMwMSwidWlkIjo1MDUwMDI3MTQ1OTEzMDIsIm5hbWUiOiJweXRob25cdTVjMGZcdTVlOTcifQ.t_Gf1xr2XkGG-4dVnwqOMoGbsSqy2966rvLgibe5M8c",
     "authorization2": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDU1ODI3NDEsIm5iZiI6MTcwNTU4Mjc0MSwiZXhwIjoxNzA2MTg3NTQxLCJzaWQiOjUwNTYzNjIwNzMxMjk2NSwidWlkIjo1MDU2MzYyMDczMTI5NjYsIm5hbWUiOiJcdTVjMGZcdTU4YThcdTVlOTdcdTk0ZmEifQ.2BFJcluASK3BqJMPCkJY3nwyEuT5l8UwnZfFcLRjBb0"
@@ -353,7 +355,7 @@ def start(email, password):
     return (surplus_day, inviteCode_data)
 
 
-def get_data(kind_id="505018174505029"):
+def get_data(kind_id="505018174505029",sale_status="1"):
     headers = {
         # 'authorization': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDU1MTU2ODYsIm5iZiI6MTcwNTUxNTY4NiwiZXhwIjoxNzA2MTIwNDg2LCJzaWQiOjUwNTAwMjcxNDU5MTMwMSwidWlkIjo1MDUwMDI3MTQ1OTEzMDIsIm5hbWUiOiJweXRob25cdTVjMGZcdTVlOTcifQ.mNXdvTkVM5vLa48BCS9wZo_TPybLXKWchXurXwZdY3c',
         'authorization': xy_authorization["authorization"],
@@ -368,7 +370,7 @@ def get_data(kind_id="505018174505029"):
         'count': '0',
         'size': '25',
         'kind_id': kind_id,  # 5天vip
-        'sale_status': '1',
+        'sale_status': sale_status,
     }
 
     while True:
@@ -527,11 +529,6 @@ app = Flask(__name__)
 CORS(app, supports_credentials=True)
 
 
-@app.route('/switch_users', methods=['POST', "GET"])
-def switch_users():
-    switch_user()
-    return {"message": "切换成功"}
-
 def get_xy_key():
     headers = {
         'authority': 'api.goofish.pro',
@@ -562,11 +559,16 @@ def get_xy_key():
     xy_authorization["authorization"] = response.json()['data']['access_token']
     return xy_authorization["authorization"]
 
+@app.route('/switch_users', methods=['POST', "GET"])
+def switch_users():
+    switch_user()
+    return {"message": "切换成功"}
 
 @app.route('/goofish_key', methods=['POST', "GET"])
 def goofish_key():
     try:
         res_data = get_data()
+        print(res_data)
         # if len(res_data)!=0:
         return {"token": xy_authorization["authorization"]}
     except:
@@ -622,7 +624,8 @@ def get_vip_data():
 @app.route('/get_kami_data', methods=['POST', "GET"])
 def get_kami_data():
     kind_id = request.json['kind_id']
-    data_list = get_data(kind_id=kind_id)
+    sale_status = request.json['sale_status']
+    data_list = get_data(kind_id=kind_id, sale_status=sale_status)
 
     return data_list
 
@@ -643,8 +646,8 @@ def get_request():
 
 
 # if __name__ == '__main__':
-#     # app.run(port=8087, host='0.0.0.0', debug=False)
+#     app.run(port=8087, host='0.0.0.0', debug=False)
 #     # get_xy_key()
-#     print(get_data())
+#     # print(get_data(kind_id="505657512730693"))
 #     # main()
 #     # post_vip("25129828",2)
