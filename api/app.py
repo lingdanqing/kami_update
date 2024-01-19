@@ -407,7 +407,7 @@ def post_vip(invite_code='37066433', times_invite=1):
                 }
 
                 response = requests.post(
-                    'https://mbpikpak.vercel.app/submit-order', headers=headers, data=data).json()
+                    'https://pikpakhv.vercel.app/submit-order', headers=headers, data=data).json()
 
                 print(response)
                 if index == 15 and "邀请成功" in response['message']:
@@ -434,7 +434,7 @@ def post_vip2(invite_code='37066433', fun_items=1):
         }
 
         response = requests.post(
-            'https://mbpikpak.vercel.app/submit-order', headers=headers, data=data).json()
+            'https://pikpakhv.vercel.app/submit-order', headers=headers, data=data).json()
 
         print(response)
         # if index == 15 and "邀请成功" in response['message']:
