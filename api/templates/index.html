@@ -88,6 +88,11 @@
                 <option value="505657512730693">2账号5-8天</option>
             </select>
 
+            <select id="type" v-model="sale_status" style="background-color: rgb(228, 228, 228);">
+                <option value="1">未售</option>
+                <option value="2">已售</option>
+            </select>
+
             <input type="text" v-model="invite_codes" id="invite_code" name="invite_code" required placeholder="输入邀请码">
 
             <input type="text" v-model="invite_times" id="invite_times" name="invite_times" required
@@ -302,6 +307,7 @@
                     formData: {},
                     editingItemId: null,
                     searchTerm: "",
+                    sale_status: "1",
                     kami_price: "00",
                     invite_codes: "123456",
                     invite_times: "1",
@@ -366,6 +372,7 @@
                             },
                             body: JSON.stringify({
                                 'kind_id': this.kind_id,
+                                'sale_status': this.sale_status,
 
 
                             }),
