@@ -572,7 +572,7 @@ def get_xy_key():
 def switch_users():
     accout_code = request.args.get("accout_code")
     print(accout_code)
-    token = switch_user(accout_code="1")
+    token = switch_user(accout_code=accout_code)
     return {"message": "切换成功","token":token}
 
 @app.route('/goofish_key', methods=['POST', "GET"])
