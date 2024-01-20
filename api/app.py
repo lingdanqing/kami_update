@@ -344,15 +344,18 @@ def start(email, password):
     # data.vipItem[0].surplus_day
 
     surplus_day_json = get_vip_datas(
-        user_agent, device_id, access_token, captcha_token)['data']['vipItem'][0]
-    if "surplus_day" in surplus_day_json:
-        surplus_day = surplus_day_json['surplus_day']
-    else:
-        surplus_day = 0
+        user_agent, device_id, access_token, captcha_token)['data']['vipItem']
+    surplus_day_vip = {"surplus_day":0}
+    for data in surplus_day_json:
+        if "surplus_day" in data:
+            surplus_day_vip["surplus_day"] = data['surplus_day']
+        # else:
+        #     surplus_day = 0
+
     inviteCode_data = inviteCode(
         access_token, captcha_token, device_id, user_agent)
 
-    return (surplus_day, inviteCode_data)
+    return (surplus_day_vip["surplus_day"], inviteCode_data)
 
 
 def get_data(kind_id="505018174505029",sale_status="1"):
