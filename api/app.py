@@ -345,10 +345,11 @@ def start(email, password):
 
     surplus_day_json = get_vip_datas(
         user_agent, device_id, access_token, captcha_token)['data']['vipItem']
-    surplus_day_vip = {"surplus_day":0}
+    surplus_day_vip = {"surplus_day":"0"}
     for data in surplus_day_json:
         if "surplus_day" in data:
             surplus_day_vip["surplus_day"] = data['surplus_day']
+            break
         # else:
         #     surplus_day = 0
 
