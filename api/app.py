@@ -22,9 +22,13 @@ user_data = {
 }
 
 xy_authorization = {"authorization": user_data["authorization2"]}
-def switch_user():
-    xy_authorization["authorization"] = user_data["authorization1"] if xy_authorization["authorization"] == user_data["authorization2"] else user_data["authorization2"]
-    # return xy_authorization
+def switch_user(accout_code="1"):
+    if accout_code=="1":
+        xy_authorization["authorization"] = user_data["authorization1"]
+    else:
+        xy_authorization["authorization"] = user_data["authorization2"]
+    # xy_authorization["authorization"] = user_data["authorization1"] if xy_authorization["authorization"] == user_data["authorization2"] else user_data["authorization2"]
+    return xy_authorization["authorization"]
 
 
 # 创建随机UA
@@ -563,13 +567,17 @@ def get_xy_key():
     xy_authorization["authorization"] = response.json()['data']['access_token']
     return xy_authorization["authorization"]
 
+# http://127.0.0.1:8087/switch_users?accout_code=1
 @app.route('/switch_users', methods=['POST', "GET"])
 def switch_users():
-    switch_user()
-    return {"message": "切换成功"}
+    accout_code = request.args.get("accout_code")
+    print(accout_code)
+    token = switch_user(accout_code="1")
+    return {"message": "切换成功","token":token}
 
 @app.route('/goofish_key', methods=['POST', "GET"])
 def goofish_key():
+    
     try:
         res_data = get_data()
         print(res_data)
