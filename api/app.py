@@ -358,7 +358,8 @@ def start(email, password):
     for data in surplus_day_json:
         if "surplus_day" in data:
             surplus_day_vip["surplus_day"] = data['surplus_day']
-            break
+            if data['surplus_day'] != -1:
+                break
         # else:
         #     surplus_day = 0
 
