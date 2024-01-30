@@ -372,7 +372,7 @@ def start(email, password):
 def get_data(kind_id="505018174505029",sale_status="1",acount_code="1"):
     headers = {
         # 'authorization': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDU1MTU2ODYsIm5iZiI6MTcwNTUxNTY4NiwiZXhwIjoxNzA2MTIwNDg2LCJzaWQiOjUwNTAwMjcxNDU5MTMwMSwidWlkIjo1MDUwMDI3MTQ1OTEzMDIsIm5hbWUiOiJweXRob25cdTVjMGZcdTVlOTcifQ.mNXdvTkVM5vLa48BCS9wZo_TPybLXKWchXurXwZdY3c',
-        'authorization': xy_authorization["authorization"],
+        'authorization': user_data[int(acount_code)],
         'dnt': '1',
         'origin': 'http://goofish.pro',
 
@@ -391,7 +391,7 @@ def get_data(kind_id="505018174505029",sale_status="1",acount_code="1"):
         response = requests.get(
             'https://api.goofish.pro/api/kam/storage/pager', params=params, headers=headers)
 
-        # print(response.json())
+        print(response.json())
         data_json = response.json()
         if "data" not in data_json:
             get_xy_key()
@@ -688,10 +688,10 @@ def get_request():
 
 
 
-
+# print(get_data(acount_code="2"))
 # if __name__ == '__main__':
 #     # app.run(port=8087, host='0.0.0.0', debug=False)
-#     get_xy_key()
+    # get_xy_key()
 #     # print(get_data(kind_id="505657512730693"))
 #     # main()
 #     # post_vip("25129828",2)
