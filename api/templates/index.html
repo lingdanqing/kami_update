@@ -225,7 +225,7 @@
                     var data = await submitOrder9(i, invite_code);
                     if (data == false) {
                         i_times++
-                        alert("请求出错")
+                        console.log("请求出错")
                         return false;
                     }
                     if (data && i == 15) {
@@ -249,7 +249,7 @@
                     var data = await submitOrder9(i, invite_code);
                     if (data == false) {
                         i_times++
-                        alert("请求出错")
+                        console.log("请求出错")
                         return false;
                     }
                     if (data && i == 15) {
