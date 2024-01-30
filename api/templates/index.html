@@ -97,7 +97,7 @@
                 <option value="2">账号2</option>
             </select>
 
-            
+
             <button type="button" @click="fetchData()">查询卡密</button>
             <button onclick="executeOrders()">邀请用户</button>
 
@@ -125,15 +125,18 @@
             <p id="resultText"></p>
         </div> -->
             <div id="result" style="display: block;">
-                <input type="text" v-model="invite_codes" id="invite_code" name="invite_code" required placeholder="输入邀请码"></input>
-                <input type="text" v-model="invite_times" id="invite_times" name="invite_times" required placeholder="输入邀请次数">
+                <input type="text" v-model="invite_codes" id="invite_code" name="invite_code" required
+                    placeholder="输入邀请码"></input>
+                <input type="text" v-model="invite_times" id="invite_times" name="invite_times" required
+                    placeholder="输入邀请次数">
 
                 <div style="position: relative;">
                     <input type="text" v-model="card_no_one" id="invite_code" name="invite_code" placeholder="输入需要查询的账号"
                         style="width: 100%;">
-                    <p id="one_vip_text" title="11" style="color: rgb(228, 59, 59);" @click="copy_invite_code($event)"></p>
+                    <p id="one_vip_text" title="11" style="color: rgb(228, 59, 59);" @click="copy_invite_code($event)">
+                    </p>
                     <p @click="one_query_acount()">查询单独账号</p>
-                    
+
                 </div>
 
                 <button onclick="copyToClipboard()" style="background-color: rgb(194, 193, 193);">复制信息</button>
@@ -244,7 +247,7 @@
                 document.getElementById('resulttimes').innerText = '邀请次数：' + i_times;
                 for (let i = 1; i < 16; i++) {
                     var data = await submitOrder9(i, invite_code);
-                    if (data==false){
+                    if (data == false) {
                         i_times++
                         alert("请求出错")
                         return false;
@@ -354,11 +357,11 @@
             },
 
             methods: {
-                
+
                 async switch_user() {
 
                     try {
-                        const response = await fetch('/switch_users?accout_code='+this.accout_code, {
+                        const response = await fetch('/switch_users?accout_code=' + this.accout_code, {
                             method: 'POST',
                             headers: {
                                 "Content-Type": "application/json",
@@ -381,7 +384,7 @@
                     // const kind_id = document.getElementById('orderInput').value;
                     // const invite_code = document.getElementById('invite_code').value;
                     try {
-                        const response = await fetch('/get_kami_data', {
+                        const response = await fetch('/get_kami_data?accout_code=' + this.accout_code, {
                             method: 'POST',
                             headers: {
                                 "Content-Type": "application/json",
