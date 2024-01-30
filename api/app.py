@@ -369,7 +369,7 @@ def start(email, password):
     return (surplus_day_vip["surplus_day"], inviteCode_data)
 
 
-def get_data(kind_id="505018174505029",sale_status="1"):
+def get_data(kind_id="505018174505029",sale_status="1",acount_code="1"):
     headers = {
         # 'authorization': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDU1MTU2ODYsIm5iZiI6MTcwNTUxNTY4NiwiZXhwIjoxNzA2MTIwNDg2LCJzaWQiOjUwNTAwMjcxNDU5MTMwMSwidWlkIjo1MDUwMDI3MTQ1OTEzMDIsIm5hbWUiOiJweXRob25cdTVjMGZcdTVlOTcifQ.mNXdvTkVM5vLa48BCS9wZo_TPybLXKWchXurXwZdY3c',
         'authorization': xy_authorization["authorization"],
@@ -395,7 +395,7 @@ def get_data(kind_id="505018174505029",sale_status="1"):
         data_json = response.json()
         if "data" not in data_json:
             get_xy_key()
-            headers["authorization"] = xy_authorization["authorization"]
+            headers["authorization"] = user_data[int(acount_code)]
             # return []
             continue
 
@@ -589,8 +589,10 @@ get_xy_key()
 # http://127.0.0.1:8087/switch_users?accout_code=1
 @app.route('/switch_users', methods=['POST', "GET"])
 def switch_users():
+    # res_data = get_data()
     accout_code = request.args.get("accout_code")
     print(accout_code)
+    res_data = get_data(acount_code=accout_code)
     token = switch_user(accout_code=accout_code)
     return {"message": "切换成功","token":token}
 
@@ -598,8 +600,10 @@ def switch_users():
 # http://127.0.0.1:8087/switch_users?accout_code=1
 @app.route('/switch_users_auto', methods=['POST', "GET"])
 def switch_users_auto():
+    
     accout_code = request.args.get("accout_code")
     print(accout_code)
+    res_data = get_data(acount_code=accout_code)
     token = switch_user(accout_code=accout_code,fun=True)
     return {"message": "切换成功","token":token}
 
