@@ -667,9 +667,10 @@ def get_vip_data():
 
 @app.route('/get_kami_data', methods=['POST', "GET"])
 def get_kami_data():
+    accout_code = request.args.get("accout_code")
     kind_id = request.json['kind_id']
     sale_status = request.json['sale_status']
-    data_list = get_data(kind_id=kind_id, sale_status=sale_status)
+    data_list = get_data(kind_id=kind_id, sale_status=sale_status,acount_code=accout_code)
 
     return data_list
 
@@ -690,7 +691,7 @@ def get_request():
 
 # print(get_data(acount_code="1"))
 # if __name__ == '__main__':
-#     # app.run(port=8087, host='0.0.0.0', debug=False)
+#     app.run(port=8087, host='0.0.0.0', debug=False)
     # get_xy_key()
 #     # print(get_data(kind_id="505657512730693"))
 #     # main()
