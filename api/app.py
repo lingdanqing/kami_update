@@ -372,7 +372,7 @@ def start(email, password):
 def get_data(kind_id="505018174505029",sale_status="1",acount_code="1"):
     headers = {
         # 'authorization': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDU1MTU2ODYsIm5iZiI6MTcwNTUxNTY4NiwiZXhwIjoxNzA2MTIwNDg2LCJzaWQiOjUwNTAwMjcxNDU5MTMwMSwidWlkIjo1MDUwMDI3MTQ1OTEzMDIsIm5hbWUiOiJweXRob25cdTVjMGZcdTVlOTcifQ.mNXdvTkVM5vLa48BCS9wZo_TPybLXKWchXurXwZdY3c',
-        'authorization': user_data[int(acount_code)],
+        'authorization': user_data[f'authorization{acount_code}'],
         'dnt': '1',
         'origin': 'http://goofish.pro',
 
@@ -395,7 +395,7 @@ def get_data(kind_id="505018174505029",sale_status="1",acount_code="1"):
         data_json = response.json()
         if "data" not in data_json:
             get_xy_key()
-            headers["authorization"] = user_data[int(acount_code)]
+            headers["authorization"] = user_data[f'authorization{acount_code}'],
             # return []
             continue
 
@@ -688,7 +688,7 @@ def get_request():
 
 
 
-# print(get_data(acount_code="2"))
+# print(get_data(acount_code="1"))
 # if __name__ == '__main__':
 #     # app.run(port=8087, host='0.0.0.0', debug=False)
     # get_xy_key()
