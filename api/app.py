@@ -544,34 +544,47 @@ CORS(app, supports_credentials=True)
 
 
 def get_xy_key():
-    headers = {
-        'authority': 'api.goofish.pro',
-        'accept': 'application/json',
-        'accept-language': 'zh-CN,zh;q=0.9',
-        'content-type': 'application/x-www-form-urlencoded',
-        'dnt': '1',
-        'origin': 'http://goofish.pro',
-        'referer': 'http://goofish.pro/login?redirectUrl=%2Fkam%2Fkind%2Fmanage-card%3Fkid%3D505018174505029',
-        'sec-ch-ua': '"Not?A_Brand";v="8", "Chromium";v="108", "Google Chrome";v="108"',
-        'sec-ch-ua-mobile': '?0',
-        'sec-ch-ua-platform': '"Windows"',
-        'sec-fetch-dest': 'empty',
-        'sec-fetch-mode': 'cors',
-        'sec-fetch-site': 'cross-site',
-        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36',
-    }
-    data = {
-        'key': 'TVRneU1EZzJPRE00TWpVPQ==',
-        'iv': 'GvqfVCG6k4pr1dThPzKgFA==',
-        'img_code': '1234',
-        'channel': '1',
-    }
 
-    response = requests.post(
-        'https://api.goofish.pro/api/user/login/passwordLogin', headers=headers, data=data)
-    print(response.json())
-    xy_authorization["authorization"] = response.json()['data']['access_token']
+    login_res_list = []
+    key_list = [['TVRneU1EZzJPRE00TWpVPQ==','GvqfVCG6k4pr1dThPzKgFA=='],['TVRnNU1qVTBNVFU0TVRJPQ==','zoQ5zr8lcsPnAm4d0+86JQ==']]
+    for key_data in key_list:
+        headers = {
+            'authority': 'api.goofish.pro',
+            'accept': 'application/json',
+            'accept-language': 'zh-CN,zh;q=0.9',
+            'content-type': 'application/x-www-form-urlencoded',
+            'dnt': '1',
+            'origin': 'http://goofish.pro',
+            'referer': 'http://goofish.pro/login?redirectUrl=%2Fkam%2Fkind%2Fmanage-card%3Fkid%3D505018174505029',
+            'sec-ch-ua': '"Not?A_Brand";v="8", "Chromium";v="108", "Google Chrome";v="108"',
+            'sec-ch-ua-mobile': '?0',
+            'sec-ch-ua-platform': '"Windows"',
+            'sec-fetch-dest': 'empty',
+            'sec-fetch-mode': 'cors',
+            'sec-fetch-site': 'cross-site',
+            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36',
+        }
+        data = {
+            'key': key_data[0],
+            'iv': key_data[1],
+            #  'key': 'TVRnNU1qVTBNVFU0TVRJPQ==',
+            # 'iv': 'zoQ5zr8lcsPnAm4d0+86JQ==',
+            'img_code': '1234',
+            'channel': '1',
+        }
+
+        response = requests.post(
+            'https://api.goofish.pro/api/user/login/passwordLogin', headers=headers, data=data)
+        print(response.json())
+        xy_authorization["authorization"] = response.json()['data']['access_token']
+        login_res_list.append(response.json()['data']['access_token'])
+    user_data["authorization1"] = login_res_list[0]
+    user_data["authorization2"] = login_res_list[1]
+    print(login_res_list)
     return xy_authorization["authorization"]
+
+
+get_xy_key()
 
 # http://127.0.0.1:8087/switch_users?accout_code=1
 @app.route('/switch_users', methods=['POST', "GET"])
@@ -673,8 +686,8 @@ def get_request():
 
 
 # if __name__ == '__main__':
-#     app.run(port=8087, host='0.0.0.0', debug=False)
-#     # get_xy_key()
+#     # app.run(port=8087, host='0.0.0.0', debug=False)
+#     get_xy_key()
 #     # print(get_data(kind_id="505657512730693"))
 #     # main()
 #     # post_vip("25129828",2)
