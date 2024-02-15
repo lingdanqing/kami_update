@@ -382,7 +382,7 @@ def get_data(kind_id="505018174505029",sale_status="1",acount_code="1"):
     params = {
         'idx': '1',
         'count': '0',
-        'size': '25',
+        'size': '100',
         'kind_id': kind_id,  # 5天vip
         'sale_status': sale_status,
     }
