@@ -584,7 +584,7 @@ def get_xy_key():
     return xy_authorization["authorization"]
 
 
-get_xy_key()
+# get_xy_key()
 
 # http://127.0.0.1:8087/switch_users?accout_code=1
 @app.route('/switch_users', methods=['POST', "GET"])
